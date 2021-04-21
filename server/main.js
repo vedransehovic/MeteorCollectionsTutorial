@@ -1,31 +1,27 @@
-import { Meteor } from 'meteor/meteor';
-import { LinksCollection } from '/imports/api/links';
-
-function insertLink({ title, url }) {
-  LinksCollection.insert({title, url, createdAt: new Date()});
-}
+// Only executed on the server
+import _ from "lodash";
+import { Meteor } from "meteor/meteor";
+import { Employees } from "../imports/collections/employees";
+import { image, helpers } from "faker";
 
 Meteor.startup(() => {
-  // If the Links collection is empty, add some data.
-  if (LinksCollection.find().count() === 0) {
-    insertLink({
-      title: 'Do the Tutorial',
-      url: 'https://www.meteor.com/tutorials/react/creating-an-app'
-    });
+  // Great place to generate data
 
-    insertLink({
-      title: 'Follow the Guide',
-      url: 'http://guide.meteor.com'
-    });
+  // Check to see if data exists in the collection
+  // See if the collection has any records
+  const numberRecords = Employees.find({}).count();
+  //console.log(numberRecords);
+  if (!numberRecords) {
+    // Generate some data...
+    _.times(5000, () => {
+      const { name, email, phone } = helpers.createCard();
 
-    insertLink({
-      title: 'Read the Docs',
-      url: 'https://docs.meteor.com'
-    });
-
-    insertLink({
-      title: 'Discussions',
-      url: 'https://forums.meteor.com'
+      Employees.insert({
+        name,
+        email,
+        phone,
+        avatar: image.avatar(),
+      });
     });
   }
 });
