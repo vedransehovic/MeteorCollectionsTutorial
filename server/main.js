@@ -5,8 +5,6 @@ import { Employees } from "../imports/collections/employees";
 import { image, helpers } from "faker";
 
 Meteor.startup(() => {
-  // Great place to generate data
-
   // Check to see if data exists in the collection
   // See if the collection has any records
   const numberRecords = Employees.find({}).count();
@@ -24,4 +22,8 @@ Meteor.startup(() => {
       });
     });
   }
+
+  Meteor.publish("employees", function () {
+    return Employees.find({}, { limit: 20 });
+  });
 });
